@@ -10,19 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Build
+      - name: Build with Gradle
         run: |
-          mkdir -p "$ANDROID_HOME/licenses"
-          echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187478751e042116279f018e692f80164e2\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
-          gradle assembleDebug --stacktrace
-          
+          # SDK Lizenzen "hart" injizieren
+          mkdir -p $ANDROID_HOME/licenses
+          echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
+          # Alles sauber machen und bauen
+          gradle clean assembleDebug --no-daemon
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
