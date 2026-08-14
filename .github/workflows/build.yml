@@ -27,8 +27,16 @@ jobs:
         with:
           gradle-version: '8.1.1'
 
-      - name: Build APK with Full Info & Stacktrace
-        run: gradle assembleDebug --stacktrace --info --no-daemon
+      - name: Build APK & Catch Error
+        run: |
+          gradle assembleDebug --stacktrace > build.log 2>&1 || {
+            echo "===================================================="
+            echo "🚨 HIER IST DER ECHTE FEHLER:"
+            echo "===================================================="
+            grep -C 5 "Exception:" build.log || tail -n 40 build.log
+            echo "===================================================="
+            exit 1
+          }
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
