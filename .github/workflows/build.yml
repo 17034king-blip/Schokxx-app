@@ -17,23 +17,22 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: 'platforms;android-34 build-tools;34.0.0'
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '8.4'
 
-      - name: Build APK
+      - name: Accept Android Licenses & Build APK
         run: |
-          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          # Alle SDK Lizenzen automatisch akzeptieren
+          mkdir -p $ANDROID_HOME/licenses
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          
+          # Build durchführen
           gradle assembleDebug > build.log 2>&1 || (
-            echo "=================== VOLLSTÄNDIGER FEHLER-LOG ==================="
-            cat build.log
-            echo "================================================================"
+            echo "=================== ECHTER FEHLER-GRUND ==================="
+            grep -B 10 -A 5 "BUILD FAILED" build.log || tail -n 25 build.log
+            echo "=========================================================="
             exit 1
           )
 
