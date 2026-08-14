@@ -27,12 +27,13 @@ jobs:
         with:
           gradle-version: '8.4'
 
-      - name: Build APK with Error Output
+      - name: Build APK
         run: |
-          gradle assembleDebug --stacktrace > build.log 2>&1 || (
-            echo "=================== FEHLER-DIAGNOSE ==================="
-            grep -i -C 3 "error\|failed\|exception\|caused by" build.log | tail -n 30
-            echo "======================================================="
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          gradle assembleDebug > build.log 2>&1 || (
+            echo "=================== VOLLSTÄNDIGER FEHLER-LOG ==================="
+            cat build.log
+            echo "================================================================"
             exit 1
           )
 
