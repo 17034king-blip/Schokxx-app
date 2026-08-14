@@ -12,11 +12,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button myButton = findViewById(R.id.myButton);
+        Button myButton = (Button) findViewById(R.id.myButton);
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Button wurde gedrückt!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Button wurde gedrückt!", Toast.LENGTH_SHORT).show();
             }
         });
     }
