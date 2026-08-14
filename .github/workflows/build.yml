@@ -17,18 +17,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Setup Gradle 8.4
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.4'
-
-      - name: Build APK
-        run: gradle assembleDebug --stacktrace
-
-      - name: Upload APK Artifact
+      - name: Build
+        run: |
+          mkdir -p "$ANDROID_HOME/licenses"
+          echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187478751e042116279f018e692f80164e2\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
+          gradle assembleDebug --stacktrace
+          
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
