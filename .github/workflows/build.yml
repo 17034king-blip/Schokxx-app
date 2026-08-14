@@ -17,16 +17,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Android SDK & Accept Licenses
+      - name: Setup Android SDK & Licenses
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
           $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Generate Gradle Wrapper
-        run: gradle wrapper --gradle-version 8.1.1
+      - name: Setup Gradle 8.1.1
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.1.1'
 
-      - name: Build APK with Gradle Wrapper
-        run: ./gradlew assembleDebug --no-daemon
+      - name: Build APK directly
+        run: gradle assembleDebug --no-daemon
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
