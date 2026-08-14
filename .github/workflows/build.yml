@@ -27,8 +27,16 @@ jobs:
         with:
           gradle-version: '8.1.1'
 
-      - name: Build APK
-        run: gradle assembleDebug --no-daemon
+      - name: Build APK & Capture Compiler Error
+        run: |
+          gradle assembleDebug --stacktrace > build.log 2>&1 || {
+            echo "===================================================="
+            echo "🚨 KOMPILER-FEHLER DETAILS:"
+            echo "===================================================="
+            grep -C 10 "error:" build.log || tail -n 40 build.log
+            echo "===================================================="
+            exit 1
+          }
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
